@@ -46,7 +46,7 @@ export default function Navbar({
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className={`py-2 text-sm font-semibold uppercase tracking-wide transition-colors ${
+                  className={`font-title py-2 text-sm font-semibold uppercase tracking-wide transition-colors ${
                     useLightChrome
                       ? "text-zinc-700 hover:text-[#e63946]"
                       : "text-white/90 hover:text-white"
@@ -102,7 +102,7 @@ export default function Navbar({
                 <Link
                   href={item.href}
                   onClick={onCloseMenu}
-                  className="block rounded px-2 py-3 text-sm font-semibold uppercase tracking-wide text-zinc-800 transition-colors hover:bg-zinc-100 hover:text-[#e63946]"
+                  className="font-title block rounded px-2 py-3 text-sm font-semibold uppercase tracking-wide text-zinc-800 transition-colors hover:bg-zinc-100 hover:text-[#e63946]"
                 >
                   {item.label}
                 </Link>

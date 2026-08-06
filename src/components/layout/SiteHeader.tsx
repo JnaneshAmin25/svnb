@@ -27,7 +27,7 @@ export default function SiteHeader() {
   const useLightChrome = isScrolled || isMenuOpen;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-600">
       <TopBar isDark={useLightChrome} />
       <Navbar
         useLightChrome={useLightChrome}

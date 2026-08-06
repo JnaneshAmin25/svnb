@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 const trajanPro = localFont({
   src: [
@@ -21,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${trajanPro.variable} h-full antialiased`}
+      className={`${poppins.variable} ${trajanPro.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>
