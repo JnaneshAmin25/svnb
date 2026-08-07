@@ -20,6 +20,24 @@ export const site = {
     { label: "Copyright", href: "/copyright" },
     { label: "Refund Policy", href: "/refund" },
   ],
+  footer: {
+    contact: {
+      address: "Indrali, Udupi. ",
+    },
+    quickLinks: [
+      { label: "Home", href: "/" },
+      { label: "Our Journey", href: "/our-journey" },
+      { label: "Gallery", href: "/gallery" },
+      { label: "Services", href: "/services" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+    usefulLinks: [
+      { label: "FAQ", href: "/faq" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Login", href: "/login" },
+    ],
+  },
 };
 
 export type SiteData = typeof site;

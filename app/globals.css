@@ -57,3 +57,18 @@ h6,
 .animate-digit-in {
   animation: digit-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+@keyframes gallery-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Move exactly one full copy so the third copy lines up seamlessly. */
+    transform: translateX(-33.3333%);
+  }
+}
+
+.animate-gallery-marquee {
+  animation: gallery-marquee 40s linear infinite;
+  will-change: transform;
+}

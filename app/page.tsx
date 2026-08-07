@@ -4,7 +4,9 @@ import BookNow from "@/components/home/BookNow";
 import AboutUs from "@/components/home/AboutUs";
 import Services from "@/components/home/Services";
 import UpcomingEvent from "@/components/home/UpcomingEvent";
+import Gallery from "@/components/home/Gallery";
 import ClientReview from "@/components/home/ClientReview";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
@@ -21,7 +23,9 @@ export default function Home() {
         <Services />
         <UpcomingEvent />
         <ClientReview />
+        <Gallery />
       </main>
+      <Footer />
     </>
   );
 }

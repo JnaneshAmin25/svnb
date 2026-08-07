@@ -90,7 +90,7 @@ export default function TestimonialCard({
     expanded || !isLong ? quote : truncateToLetters(quote, COLLAPSED_LETTER_LIMIT);
 
   return (
-    <article className="group flex h-full shrink-0 flex-col justify-between bg-transparent px-4 py-4 transition-colors duration-200 hover:bg-white hover:shadow-lg md:px-5">
+    <article className="group flex h-full min-h-[16rem] shrink-0 flex-col justify-between bg-transparent px-4 py-4 transition-colors duration-200 bg-white md:bg-transparent hover:bg-white hover:shadow-lg md:px-5">
       <div>
         <blockquote className={`text-[15px] leading-7 ${REVIEW_BODY}`}>
           &ldquo;{renderQuote(displayQuote)}&rdquo;
@@ -108,7 +108,7 @@ export default function TestimonialCard({
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mt-8">
         <p className={`text-sm font-semibold text-zinc-900 transition-colors duration-200 group-hover:text-[#e63946]`}>{name}</p>
         <p className={`mt-1 text-xs ${REVIEW_ROLE}`}>{role}</p>
       </div>

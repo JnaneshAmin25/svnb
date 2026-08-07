@@ -73,9 +73,21 @@ function DigitPair({ value }: { value: number }) {
 }
 
 export default function UpcomingEvent() {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft);
+  // SSR placeholder matches the client first paint (00:00:00:00) so React doesn't
+  // warn about hydration mismatches from a Date.now() drift between server and client.
+  type TimeLeft = {
+    Days: number;
+    Hours: number;
+    Minutes: number;
+    Seconds: number;
+  };
+  const ZERO: TimeLeft = { Days: 0, Hours: 0, Minutes: 0, Seconds: 0 };
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(ZERO);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setTimeLeft(getTimeLeft());
     const timer = window.setInterval(() => setTimeLeft(getTimeLeft()), 1000);
     return () => window.clearInterval(timer);
   }, []);
@@ -95,7 +107,7 @@ export default function UpcomingEvent() {
         <p className="text-sm font-medium uppercase tracking-widest text-white/85">
           Upcoming Event
         </p>
-        <h4 className="mt-4 text-xl font-bold uppercase text-white sm:text-4xl md:text-3xl">
+        <h4 className="mt-4 text-2xl font-bold uppercase text-white md:text-3xl">
           Ganesh Chaturthi
         </h4>
         <p className="mt-4 max-w-2xl text-xs leading-6 text-white/80 sm:text-sm">
@@ -103,7 +115,7 @@ export default function UpcomingEvent() {
           energy from Shri Veera Vinayaka Nasik Band.
         </p>
 
-        <div className="mt-8 grid w-full max-w-2xl grid-cols-4">
+        <div className="mt-8 grid w-full max-w-2xl grid-cols-4" aria-live={mounted ? "off" : "polite"}>
           {UNITS.map((unit) => (
             <div key={unit} className="text-center">
               <DigitPair value={timeLeft[unit as keyof typeof timeLeft]} />

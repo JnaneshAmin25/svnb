@@ -1,44 +1,28 @@
 import Link from "next/link";
-import {
-  FaUser,
-  FaPhone,
-  FaEnvelope,
-  FaFacebookF,
-  FaYoutube,
-  FaInstagram,
-} from "react-icons/fa";
+import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import SocialIconRow from "@/components/ui/SocialIconRow";
 import { site } from "@/data/site";
-
-const icons: Record<string, React.ReactNode> = {
-  facebook: <FaFacebookF />,
-  youtube: <FaYoutube />,
-  instagram: <FaInstagram />,
-};
 
 export default function TopBar({ isDark = false }: { isDark?: boolean }) {
   return (
     <div
       className={`border-b text-xs transition-colors duration-300 ${
-        isDark ? "border-white/10 bg-black text-white" : "border-white/10 bg-transparent text-white"
+        isDark
+          ? "border-white/10 bg-black text-white"
+          : "border-white/10 bg-transparent text-white"
       }`}
     >
       <Container>
         <div className="flex h-10 items-center justify-between gap-4">
-          <ul className="flex items-center gap-3 text-base text-white sm:text-lg">
-            {site.socials.map((s) => (
-              <li key={s.name}>
-                <Link
-                  href={s.href}
-                  aria-label={s.name}
-                  className="text-white transition-opacity hover:opacity-80"
-                >
-                  {icons[s.icon]}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="text-white">
+            <SocialIconRow
+              items={site.socials}
+              iconClassName="h-4 w-4 sm:h-5 sm:w-5"
+              listClassName="flex items-center gap-3 sm:gap-4"
+            />
+          </div>
           <ul className="flex items-center gap-4 text-white sm:gap-6">
             <li className="hidden items-center gap-2 sm:flex">
               <FaPhone className="text-white" />
