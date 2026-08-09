@@ -13,12 +13,18 @@ type SocialIconRowProps = {
   iconClassName?: string;
   /** Tailwind classes applied to the `<ul>` (gap, alignment). */
   listClassName?: string;
+  /**
+   * Extra classes appended to the anchor's class list for hover/focus treatment.
+   * Defaults to a subtle opacity dim; the footer overrides with the brand red.
+   */
+  hoverClassName?: string;
 };
 
 export default function SocialIconRow({
   items,
   iconClassName = "h-4 w-4",
   listClassName = "flex items-center gap-5",
+  hoverClassName = "transition-opacity hover:opacity-70",
 }: SocialIconRowProps) {
   return (
     <ul className={listClassName}>
@@ -26,11 +32,7 @@ export default function SocialIconRow({
         const Icon = SOCIAL_ICONS[icon];
         return (
           <li key={name}>
-            <Link
-              href={href}
-              aria-label={name}
-              className="transition-opacity hover:opacity-70"
-            >
+            <Link href={href} aria-label={name} className={hoverClassName}>
               <Icon className={iconClassName} />
             </Link>
           </li>

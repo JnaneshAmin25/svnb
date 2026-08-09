@@ -1,3 +1,7 @@
+import type { SocialIconName } from "@/components/ui/socialIcons";
+
+type SocialEntry = { name: string; href: string; icon: SocialIconName };
+
 export const site = {
   name: "Sri Veera Vinayaka",
   phone: "+91 8123834047",
@@ -6,7 +10,7 @@ export const site = {
     { name: "Facebook", href: "#", icon: "facebook" },
     { name: "YouTube", href: "#", icon: "youtube" },
     { name: "Instagram", href: "#", icon: "instagram" },
-  ],
+  ] satisfies readonly SocialEntry[],
   navItems: [
     { label: "Home", href: "/" },
     { label: "Our Journey", href: "/our-journey" },
