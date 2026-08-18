@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum OtpPurpose {
+  LOGIN
+  SIGNUP
+}
+
+enum ContactStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum GalleryKind {
+  IMAGE
+  VIDEO
+}
+
+enum GalleryCategory {
+  PARYAYA
+  GANESHOTSAV
+  WEDDING
+  MOMENTS
+}
+
+enum AdminEventType {
+  OTP_REQUEST
+  BOOKING_CREATED
+  BOOKING_UPDATED
+  CONTACT_CREATED
+  CONTACT_UPDATED
+  REVIEW_CREATED
+  REVIEW_APPROVED
+  REVIEW_REJECTED
+  GALLERY_CREATED
+  GALLERY_UPDATED
+  GALLERY_DELETED
+  TEAM_CREATED
+  TEAM_UPDATED
+  TEAM_DELETED
+  ADMIN_LOGGED_IN
+}
+
+model User {
+  id                 String           @id @default(cuid())
+  phoneHash          String?          @unique
+  phoneCipher        String?
+  fullNameCipher     String?
+  fullNameHash       String?
+  emailHash          String?          @unique
+  emailCipher        String?
+  username           String?          @unique
+  passwordHash       String?
+  role               Role             @default(USER)
+  isActive           Boolean          @default(true)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  lastLoginAt        DateTime?
+
+  sessions           Session[]
+  bookings           Booking[]
+  createdBookings    Booking[] @relation("BookingCreator")
+  reviews            Review[]
+  galleryItems       GalleryItem[]     @relation("GalleryItemCreator")
+  eventsAsActor       AdminEvent[]      @relation("AdminEventActor")
+  otpChallenges      OtpChallenge[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  tokenHash  String   @unique
+  ipHash     String?
+  userAgent  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OtpChallenge {
+  id            String     @id @default(cuid())
+  userId        String?
+  channel       String     @default("phone")
+  phoneHash     String?
+  phoneCipher   String?
+  emailHash     String?
+  emailCipher   String?
+  purpose       OtpPurpose @default(LOGIN)
+  codeHash      String
+  attempts      Int        @default(0)
+  maxAttempts   Int
+  expiresAt     DateTime
+  consumedAt    DateTime?
+  verifiedAt    DateTime?
+  createdAt     DateTime   @default(now())
+
+  user          User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([phoneHash])
+  @@index([emailHash])
+  @@index([channel, emailHash, purpose, createdAt])
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  userId          String
+  adminId         String?
+  eventType       String
+  eventDate       DateTime
+  location        String
+  specialRequest  String?
+  status          BookingStatus @default(PENDING)
+  createdByAdmin   User?         @relation("BookingCreator", fields: [adminId], references: [id], onDelete: SetNull)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  isDeleted       Boolean       @default(false)
+
+  @@index([userId])
+}
+
+model ContactMessage {
+  id                String        @id @default(cuid())
+  userId            String?
+  nameCipher        String
+  nameHash          String
+  phoneCipher       String
+  phoneHash         String
+  emailCipher       String
+  emailHash         String
+  eventType         String
+  eventDate         DateTime
+  location          String
+  specialRequest    String?
+  status            ContactStatus @default(NEW)
+  repliedByAdminId  String?
+  repliedAt         DateTime?
+  createdAt         DateTime      @default(now())
+}
+
+model Review {
+  id              String       @id @default(cuid())
+  userId          String
+  bookingId       String?
+  rating          Int          @default(5)
+  messageCipher   String
+  status          ReviewStatus @default(PENDING)
+  adminReply      String?
+  reviewedAt      DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GalleryItem {
+  id               String       @id @default(cuid())
+  kind             GalleryKind
+  category         GalleryCategory @default(MOMENTS)
+  title            String?
+  src              String
+  poster           String
+  orientation      String
+  mediaType        String?
+  durationSeconds  Int?
+  cloudinaryPublicId String      @unique
+  isPublished      Boolean      @default(true)
+  displayOrder     Int          @default(0)
+  createdByAdminId String?
+  createdByAdmin   User?        @relation("GalleryItemCreator", fields: [createdByAdminId], references: [id], onDelete: SetNull)
+  isDeleted        Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model TeamMember {
+  id               String    @id @default(cuid())
+  fullNameCipher   String
+  fullNameHash     String
+  phoneCipher      String
+  phoneHash        String    @unique
+  roleName         String
+  isActive         Boolean   @default(true)
+  displayOrder     Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model AdminEvent {
+  id           String         @id @default(cuid())
+  actorId      String?
+  entity       String
+  entityId     String
+  eventType    AdminEventType
+  payload      Json?
+  createdAt    DateTime       @default(now())
+
+  actor        User?          @relation("AdminEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+}

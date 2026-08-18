@@ -33,7 +33,7 @@ function FaqRow({
           onClick={onToggle}
           className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-[#e63946]"
         >
-          <span className="font-title text-base font-semibold uppercase tracking-wide text-zinc-900 sm:text-lg">
+          <span className="font-title text-lg font-semibold uppercase tracking-wide text-zinc-900 sm:text-lg">
             {question}
           </span>
           <span
@@ -76,24 +76,21 @@ export default function Faq() {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto w-full max-w-7xl px-6">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:gap-16">
+        <div className="flex flex-col gap-12 md:gap-16">
           {/* Title block */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#e63946] sm:text-sm">
-              Frequently Asked Questions
-            </p>
-            <h4 className="mt-3 font-title text-2xl font-bold uppercase text-zinc-900 md:text-3xl">
+          <div className="text-center">
+            <h4 className="mt-3 font-title text-3xl font-bold uppercase text-zinc-900 md:text-4xl">
               Got Questions?
               <br />
               We Have Answers.
             </h4>
-            <p className="mt-5 text-sm leading-7 text-zinc-700 sm:text-base">
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-zinc-700 sm:text-base">
               Everything you need to know about booking the band for your
               event — from processions to pricing. If your question isn&apos;t
               here, drop us a line and we will respond within 24 hours.
             </p>
 
-            <div className="mt-8">
+            <div className="mt-8 flex justify-center">
               <Button href="#book-now">Book The Band</Button>
             </div>
           </div>

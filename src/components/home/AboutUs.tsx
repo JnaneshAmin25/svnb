@@ -4,7 +4,7 @@ export default function AboutUs() {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto w-full max-w-4xl px-6 text-center">
-        <h4 className="font-title text-2xl font-bold text-zinc-900 md:text-3xl">
+        <h4 className="font-title text-3xl font-bold text-zinc-900 md:text-4xl">
           9+ years of excellence
         </h4>
 

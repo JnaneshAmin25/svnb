@@ -23,7 +23,7 @@ export default function PageBanner({ eyebrow, title, image }: PageBannerProps) {
         <p className="text-xs font-medium uppercase tracking-widest text-white/85 sm:text-sm">
           {eyebrow}
         </p>
-        <h1 className="mt-3 text-3xl font-semibold uppercase tracking-tight text-white sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-semibold uppercase tracking-tight text-white sm:text-6xl">
           {title}
         </h1>
       </div>

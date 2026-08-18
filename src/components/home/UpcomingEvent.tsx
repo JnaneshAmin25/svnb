@@ -34,9 +34,9 @@ function Digit({ value }: { value: string }) {
 
   return (
     <span
-      className="relative inline-block h-9 w-[1ch] overflow-hidden text-center align-top
-                 text-3xl font-medium leading-9 tabular-nums text-white
-                 sm:h-11 sm:w-[1ch] sm:leading-[2.75rem]"
+      className="relative inline-block h-14 w-[0.72em] overflow-hidden text-center align-top
+                 text-4xl font-medium leading-[3.5rem] tabular-nums text-white
+                 sm:h-20 sm:leading-[5rem] sm:text-5xl"
     >
       {outgoing !== null && (
         <span
@@ -83,13 +83,16 @@ export default function UpcomingEvent() {
   };
   const ZERO: TimeLeft = { Days: 0, Hours: 0, Minutes: 0, Seconds: 0 };
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(ZERO);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setTimeLeft(getTimeLeft());
+    const initialFrame = window.requestAnimationFrame(() => {
+      setTimeLeft(getTimeLeft());
+    });
     const timer = window.setInterval(() => setTimeLeft(getTimeLeft()), 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.cancelAnimationFrame(initialFrame);
+      window.clearInterval(timer);
+    };
   }, []);
 
   return (
@@ -107,7 +110,7 @@ export default function UpcomingEvent() {
         <p className="text-sm font-medium uppercase tracking-widest text-white/85">
           Upcoming Event
         </p>
-        <h4 className="mt-4 text-2xl font-bold uppercase text-white md:text-3xl">
+        <h4 className="mt-4 text-3xl font-bold uppercase text-white md:text-4xl">
           Ganesh Chaturthi
         </h4>
         <p className="mt-4 max-w-2xl text-xs leading-6 text-white/80 sm:text-sm">
@@ -115,11 +118,11 @@ export default function UpcomingEvent() {
           energy from Shri Veera Vinayaka Nasik Band.
         </p>
 
-        <div className="mt-8 grid w-full max-w-2xl grid-cols-4" aria-live={mounted ? "off" : "polite"}>
+        <div className="mt-8 grid w-full max-w-2xl grid-cols-4" aria-live="off">
           {UNITS.map((unit) => (
             <div key={unit} className="text-center">
               <DigitPair value={timeLeft[unit as keyof typeof timeLeft]} />
-              <span className=" block text-[10px] font-medium uppercase tracking-widest text-white/75 sm:text-[15px]">
+              <span className="block text-xs font-medium uppercase tracking-widest text-white/75 sm:text-base">
                 {unit}
               </span>
             </div>

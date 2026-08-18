@@ -27,7 +27,7 @@ export default function ServiceCard({
         />
       </div>
       <div className="px-5 py-6 text-center">
-        <h5 className="font-title text-lg font-bold uppercase tracking-wide text-zinc-900">
+        <h5 className="font-title text-xl font-bold uppercase tracking-wide text-zinc-900 md:text-2xl">
           {title}
         </h5>
         <p className="mt-3 text-xs leading-6 text-zinc-600 sm:text-sm">

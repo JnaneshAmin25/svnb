@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
+import { FaPhone, FaEnvelope } from "react-icons/fa";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import SocialIconRow from "@/components/ui/SocialIconRow";
@@ -31,10 +31,6 @@ export default function TopBar({ isDark = false }: { isDark?: boolean }) {
             <li className="hidden items-center gap-2 md:flex">
               <FaEnvelope className="text-white" />
               <span>{site.email}</span>
-            </li>
-            <li className="hidden items-center gap-2 md:flex">
-              <FaUser className="text-white" />
-              <span>Login</span>
             </li>
             <li>
               <Button href="#" variant="solid" className="px-4 py-1.5 text-[11px] sm:px-6 sm:py-2">

@@ -26,7 +26,7 @@ const cards: WhyChooseCard[] = [
 export default function WhyChooseUs() {
   return (
     <section className="py-12 px-4 bg-zinc-100">
-        <h4 className="text-center mb-4 font-title text-2xl font-bold text-zinc-900 md:text-3xl">
+        <h4 className="text-center mb-4 font-title text-3xl font-bold text-zinc-900 md:text-4xl">
           Why Choose Us
         </h4>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 max-w-7xl mx-auto md:divide-x md:divide-zinc-200">
@@ -48,7 +48,7 @@ export default function WhyChooseUs() {
             <div className="relative z-10 -mt-6 h-6 bg-gradient-to-b from-transparent to-zinc-100 group-hover:to-white transition-colors duration-200"></div>
 
             <div className="relative z-10 bg-zinc-100 group-hover:bg-white transition-colors duration-200">
-              <h3 className="text-zinc-900 font-semibold text-lg md:text-xl mb-3 transition-colors duration-200 group-hover:text-[#e63946]">
+              <h3 className="text-zinc-900 font-semibold text-xl md:text-2xl mb-3 transition-colors duration-200 group-hover:text-[#e63946]">
                 {card.title}
               </h3>
 

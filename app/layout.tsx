@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
-import SiteHeader from "@/components/layout/SiteHeader";
-import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -27,16 +26,17 @@ export const metadata: Metadata = {
     "Shri Veera Vinayaka Nasik Band — Hindu temple, sermons, events and community.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children, auth }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${poppins.variable} ${trajanPro.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <SiteHeader />
-        {children}
-        <Footer />
+        <AuthProvider>
+          {children}
+          {auth}
+        </AuthProvider>
       </body>
     </html>
   );

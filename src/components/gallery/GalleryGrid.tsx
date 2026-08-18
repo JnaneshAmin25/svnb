@@ -6,32 +6,82 @@ import VideoCard from "./VideoCard";
 import VideoModal from "./VideoModal";
 import ImageCard from "./ImageCard";
 import ImageModal from "./ImageModal";
+import { GALLERY_CATEGORIES, toGalleryCategoryKey, type GalleryFilterKey, type GalleryCategoryKey } from "@/data/galleryCategories";
 import {
   GALLERY_MEDIA,
   type GalleryMedia,
 } from "@/data/galleryVideos";
+import { useEffect } from "react";
 
 type SelectedItem = {
-  kind: "image" | "video";
   items: GalleryMedia[];
   index: number;
 };
 
-const SECTIONS = [
-  { key: "images", label: "Photos", kind: "image" as const },
-  { key: "videos", label: "Videos", kind: "video" as const },
-];
+type GalleryApiItem = Omit<GalleryMedia, "category" | "poster" | "orientation"> & {
+  category?: string | null;
+  orientation?: GalleryMedia["orientation"] | null;
+  poster?: string | null;
+};
 
 export default function GalleryGrid() {
   const [selected, setSelected] = useState<SelectedItem | null>(null);
+  const [media, setMedia] = useState<GalleryMedia[]>(() =>
+    GALLERY_MEDIA.map((item) => ({
+      ...item,
+      category: item.category || "moments",
+    })),
+  );
+  const [activeCategory, setActiveCategory] = useState<GalleryFilterKey>("all");
+
+  const defaultCategory: GalleryCategoryKey = "moments";
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/gallery")
+      .then((response) => response.json())
+      .then((payload: unknown) => {
+        const items =
+          (payload as { data?: { items?: GalleryApiItem[] } })?.data?.items ?? [];
+        if (!mounted || !Array.isArray(items)) return;
+
+        const normalized = items.map((item) => ({
+          id: item.id,
+          type: item.type,
+          title: item.title || "",
+          caption: item.caption,
+          orientation: item.orientation || "landscape",
+          category: toGalleryCategoryKey(
+            typeof item.category === "string" ? item.category : defaultCategory,
+          ),
+          src: item.src,
+          poster: item.poster || item.src,
+          thumb: item.thumb || item.poster || item.src,
+        }));
+        setMedia(normalized as GalleryMedia[]);
+      })
+      .catch(() => {
+        setMedia(
+          GALLERY_MEDIA.map((item) => ({
+            ...item,
+            category: item.category || "moments",
+          })),
+        );
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const buckets = useMemo(() => {
-    const out: Record<string, GalleryMedia[]> = {};
-    for (const section of SECTIONS) {
-      out[section.key] = GALLERY_MEDIA.filter((m) => m.type === section.kind);
-    }
-    return out;
-  }, []);
+    if (activeCategory === "all") return media;
+    return media.filter((item) => item.category === activeCategory);
+  }, [media, activeCategory]);
+
+  const hasItems = buckets.length > 0;
+  const selectedItem = selected?.items[selected.index] ?? null;
+  const selectedCount = selected?.items.length ?? 0;
 
   const goTo = (offset: number) => {
     setSelected((prev) => {
@@ -43,61 +93,64 @@ export default function GalleryGrid() {
   };
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section id="gallery-media" className="bg-white py-14 sm:py-20">
       <Container>
-        <h2 className="sr-only">Gallery</h2>
-
-        <div className="flex flex-col gap-14 sm:gap-20">
-          {SECTIONS.map((section) => {
-            const items = buckets[section.key];
-            if (items.length === 0) return null;
-
-            return (
-              <section key={section.key} aria-labelledby={`${section.key}-title`}>
-                <div className="mb-6 flex items-baseline justify-between gap-4 border-b border-zinc-200 pb-3">
-                  <h3
-                    id={`${section.key}-title`}
-                    className="font-title text-xl font-semibold uppercase tracking-wide text-zinc-900 sm:text-2xl"
-                  >
-                    {section.label}
-                    <span className="ms-2 text-sm font-medium text-zinc-500">
-                      ({items.length})
-                    </span>
-                  </h3>
-                  <span className="hidden text-xs uppercase tracking-wider text-zinc-500 sm:inline">
-                    Mixed orientations
-                  </span>
-                </div>
-
-                <BentoRow
-                  items={items}
-                  onSelect={(item) =>
-                    setSelected({
-                      kind: section.kind,
-                      items,
-                      index: items.findIndex((i) => i.id === item.id),
-                    })
-                  }
-                />
-              </section>
-            );
-          })}
+        <div className="mb-8 text-center sm:mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e63946]">
+            Media gallery
+          </p>
+          <h2 className="mt-3 font-title text-3xl font-bold uppercase text-zinc-900 sm:text-4xl">
+            Celebrations in frame
+          </h2>
         </div>
 
-        {selected?.kind === "image" && (
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-2 sm:mb-10">
+          {GALLERY_CATEGORIES.map((category) => (
+            <button
+              key={category.key}
+              type="button"
+              onClick={() => setActiveCategory(category.key)}
+              className={`rounded-sm border px-4 py-2 text-xs font-semibold uppercase tracking-wide ${
+                activeCategory === category.key
+                  ? "border-[#e63946] bg-[#e63946] text-white"
+                  : "border-zinc-300 text-zinc-700 hover:border-zinc-500"
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {hasItems ? (
+          <MediaGrid
+            items={buckets}
+            onSelect={(item) =>
+              setSelected({
+                items: buckets,
+                index: buckets.findIndex((candidate) => candidate.id === item.id),
+              })
+            }
+          />
+        ) : (
+          <p className="py-16 text-center text-sm text-zinc-500">
+            No items in this category yet.
+          </p>
+        )}
+
+        {selectedItem?.type === "image" && (
           <ImageModal
-            image={selected.items[selected.index]}
+            image={selectedItem}
             onClose={() => setSelected(null)}
-            onPrev={selected.items.length > 1 ? () => goTo(-1) : undefined}
-            onNext={selected.items.length > 1 ? () => goTo(1) : undefined}
+            onPrev={selectedCount > 1 ? () => goTo(-1) : undefined}
+            onNext={selectedCount > 1 ? () => goTo(1) : undefined}
           />
         )}
-        {selected?.kind === "video" && (
+        {selectedItem?.type === "video" && (
           <VideoModal
-            video={selected.items[selected.index]}
+            video={selectedItem}
             onClose={() => setSelected(null)}
-            onPrev={selected.items.length > 1 ? () => goTo(-1) : undefined}
-            onNext={selected.items.length > 1 ? () => goTo(1) : undefined}
+            onPrev={selectedCount > 1 ? () => goTo(-1) : undefined}
+            onNext={selectedCount > 1 ? () => goTo(1) : undefined}
           />
         )}
       </Container>
@@ -105,20 +158,7 @@ export default function GalleryGrid() {
   );
 }
 
-/* ─────────────────────  BENTO LAYOUT  ─────────────────────
- *
- * A CSS grid with a fixed row height. Each item spans 1 or 2 rows/
- * columns depending on orientation. `grid-flow-row-dense` is the key
- * fix: without it, the browser only ever moves *forward* through the
- * grid, so a tall portrait item leaves a hole next to it that the next
- * small item can't back-fill. With dense packing, the grid fills every
- * hole it can, which is what actually produces a bento look instead of
- * a staircase of gaps.
- *
- * The row height (not aspect-ratio) now owns the sizing — cards fill
- * their track with `fill` images, so nothing fights the grid for space.
- */
-function BentoRow({
+function MediaGrid({
   items,
   onSelect,
 }: {
@@ -126,33 +166,24 @@ function BentoRow({
   onSelect: (item: GalleryMedia) => void;
 }) {
   return (
-    <div
-      className="grid grid-flow-row-dense grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 auto-rows-[150px] sm:auto-rows-[170px] lg:auto-rows-[190px]"
-    >
-      {items.map((item) => {
-        const span =
-          item.orientation === "landscape"
-            ? "col-span-2 row-span-1"
-            : item.orientation === "square"
-              ? "col-span-1 row-span-1"
-              : "col-span-1 row-span-2";
-
-        return item.type === "video" ? (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+      {items.map((item) =>
+        item.type === "video" ? (
           <VideoCard
             key={item.id}
             video={item}
             onSelect={() => onSelect(item)}
-            className={span}
+            className="aspect-[4/3]"
           />
         ) : (
           <ImageCard
             key={item.id}
             image={item}
             onSelect={() => onSelect(item)}
-            className={span}
+            className="aspect-[4/3]"
           />
-        );
-      })}
+        ),
+      )}
     </div>
   );
 }

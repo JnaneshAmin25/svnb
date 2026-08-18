@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import TestimonialCard from "./TestimonialCard";
 import Button from "../ui/Button";
+import ReviewModal from "@/components/reviews/ReviewModal";
 
 const RATING = "5.0";
 const REVIEW_COUNT = "11 reviews";
@@ -57,6 +58,7 @@ function getCardsPerView(width: number): number {
 
 export default function ClientReview() {
   const [page, setPage] = useState(0);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [cardsPerView, setCardsPerView] = useState(3);
   const [totalPages, setTotalPages] = useState(
     Math.ceil(TESTIMONIALS.length / 3),
@@ -65,13 +67,11 @@ export default function ClientReview() {
   useEffect(() => {
     const update = () => {
       const next = getCardsPerView(window.innerWidth);
-      setCardsPerView((prev) => {
-        const total = Math.ceil(TESTIMONIALS.length / next);
-        // Clamp page so we don't land past the end after a breakpoint change.
-        setPage((p) => (p >= total ? 0 : p));
-        setTotalPages(total);
-        return next;
-      });
+      const total = Math.ceil(TESTIMONIALS.length / next);
+      setCardsPerView(next);
+      // Clamp page so we don't land past the end after a breakpoint change.
+      setPage((currentPage) => (currentPage >= total ? 0 : currentPage));
+      setTotalPages(total);
     };
     update();
     window.addEventListener("resize", update);
@@ -95,9 +95,10 @@ export default function ClientReview() {
   );
 
   return (
-    <section className="bg-zinc-100 py-16 md:py-20">
+    <>
+      <section className="bg-zinc-100 py-16 md:py-20">
       <div className="mx-auto w-full max-w-7xl px-6">
-        <h4 className="text-center font-title text-2xl font-bold text-zinc-900 md:text-3xl">
+        <h4 className="text-center font-title text-3xl font-bold text-zinc-900 md:text-4xl">
           What our clients say
         </h4>
 
@@ -118,7 +119,7 @@ export default function ClientReview() {
             </div>
             <div className="md:mt-16">
               <p className="hidden md:block text-sm text-zinc-500">are you our customer?</p>
-              <Button href="#" className="mt-2">
+              <Button onClick={() => setIsReviewOpen(true)} className="mt-2">
                 Write Review
               </Button>
             </div>
@@ -206,6 +207,8 @@ export default function ClientReview() {
           </button>
         </div>
       </div>
-    </section>
+      </section>
+      {isReviewOpen ? <ReviewModal onClose={() => setIsReviewOpen(false)} /> : null}
+    </>
   );
 }

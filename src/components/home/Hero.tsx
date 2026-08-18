@@ -2,23 +2,6 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 
 const HEADER_HEIGHT_CLASS = "min-h-[calc(100vh-120px)]";
-const CLIENTS = [
-  {
-    id: 2,
-    image: "/Images/Hero/Avatar/Avatar2.jpg",
-    name: "Client 2",
-  },
-  {
-    id: 3,
-    image: "/Images/Hero/Avatar/Avatar3.jpg",
-    name: "Client 3",
-  },
-  {
-    id: 4,
-    image: "/Images/Hero/Avatar/Avatar4.jpg",
-    name: "Client 4",
-  },
-];
 
 type HeroProps = {
   zIndex?: string;
@@ -26,21 +9,25 @@ type HeroProps = {
 
 export default function Hero({ zIndex }: HeroProps) {
   return (
-    <section className={`relative min-h-screen w-full overflow-hidden bg-zinc-900 ${zIndex}`}>
+    <section
+      data-page-hero
+      className={`relative min-h-screen w-full overflow-hidden bg-zinc-900 ${zIndex}`}
+    >
       <Image
         src="/Images/Hero/hero-section.png"
         alt=""
         fill
-        priority
+        preload
+        sizes="100vw"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-black/60" />
 
       <div className={`relative z-10 flex ${HEADER_HEIGHT_CLASS} flex-col items-center justify-center px-6 pt-24 text-center`}>
-        <h1 className="max-w-4xl text-3xl font-semibold uppercase tracking-tight text-white sm:text-5xl md:text-7xl lg:text-[80px] lg:leading-[1.05]">
+        <h1 className="max-w-4xl text-4xl font-semibold uppercase tracking-tight text-white sm:text-6xl md:text-7xl lg:text-[80px] lg:leading-[1.05]">
           God Is Within Us
         </h1>
-        <p className="mt-3 sm:mt-6 max-w-2xl text-sm text-white/85 sm:text-base md:text-lg">
+        <p className="mt-3 max-w-2xl text-sm text-white/85 sm:mt-6 sm:text-base md:text-lg">
           Step into a sacred space where devotion meets community. Discover
           daily rituals, sermons, and events that bring the divine closer to
           every heart.
@@ -48,26 +35,7 @@ export default function Hero({ zIndex }: HeroProps) {
         <div className="mt-10">
           <Button href="/events">Explore Events</Button>
         </div>
-        <div className="mt-3 sm:mt-6 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
-          {/* <div className="order-2 md:order-1 flex -space-x-3">
-            {CLIENTS.map((client) => (
-              <span
-                key={client.id}
-                className="relative h-9 w-9 overflow-hidden rounded-full border-2 border-white bg-zinc-200 shadow-md"
-              >
-                <Image
-                  src={client.image}
-                  alt={client.name}
-                  fill
-                  sizes="36px"
-                  className="object-cover"
-                />
-              </span>
-            ))}
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-bold text-white shadow-md">
-              +7
-            </span>
-          </div> */}
+        <div className="mt-3 flex flex-col items-center gap-3 sm:mt-6 sm:flex-row sm:gap-4">
           <div className="flex items-center sm:items-start">
             <Image
               src="/Images/Hero/five-stars.png"

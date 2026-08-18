@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { FaUser, FaUserCircle } from "react-icons/fa";
 import Container from "@/components/ui/Container";
+import Button from "@/components/ui/Button";
+import { useAuth } from "@/components/auth/AuthProvider";
 import logoOnDark from "../../../public/Images/Logo/logo-light.png";
 import logoOnLight from "../../../public/Images/Logo/logo-dark.png";
 import { site } from "@/data/site";
@@ -23,6 +26,21 @@ export default function Navbar({
   onToggleMenu,
   onCloseMenu,
 }: NavbarProps) {
+  const { status, isLoggedInLocal, hasSignedInBefore, user } = useAuth();
+
+  // Treat the user as logged in for UI purposes the moment the localStorage
+  // flag flips to true. The provider is still revalidating with /api/auth/me
+  // in the background; if it returns 401 we'll flip the UI back to Login.
+  const isAuthed = status === "authenticated" || (status === "loading" && isLoggedInLocal);
+  const displayName = user?.fullName || user?.email || user?.phone || "Account";
+
+  const loginItem = site.navItems.find((item) => item.label === "Login");
+  const signupItem = site.navItems.find((item) => item.label === "Signup");
+  const accountItem = hasSignedInBefore ? loginItem : signupItem;
+  const navItems = site.navItems.filter(
+    (item) => item.label !== "Login" && item.label !== "Signup",
+  );
+
   return (
     <nav
       aria-label="Primary"
@@ -42,7 +60,7 @@ export default function Navbar({
           </Link>
 
           <ul className="hidden items-center gap-8 md:flex">
-            {site.navItems.map((item) => (
+            {navItems.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
@@ -56,6 +74,42 @@ export default function Navbar({
                 </Link>
               </li>
             ))}
+
+            {isAuthed ? (
+              <>
+                <li>
+                  <Link
+                    href="/profile"
+                    aria-label={`Profile — signed in as ${displayName}`}
+                    className={`font-title inline-flex items-center gap-2 border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
+                      useLightChrome
+                        ? "border-zinc-300 text-zinc-900 hover:bg-zinc-900 hover:text-white"
+                        : "border-white/40 text-white hover:bg-white hover:text-zinc-900"
+                    }`}
+                  >
+                    <FaUserCircle className="h-3.5 w-3.5" />
+                    Profile
+                  </Link>
+                </li>
+              </>
+            ) : (
+              accountItem ? (
+                <li>
+                  <Button
+                    href={accountItem.href}
+                    variant="outline"
+                    icon={<FaUser className="h-3.5 w-3.5" />}
+                    className={`px-4 py-2 text-xs ${
+                      useLightChrome
+                        ? "text-zinc-900 hover:bg-zinc-900 hover:text-white"
+                        : "text-white hover:bg-white hover:text-zinc-900"
+                    }`}
+                  >
+                    {accountItem.label}
+                  </Button>
+                </li>
+              ) : null
+            )}
           </ul>
 
           <button
@@ -97,7 +151,7 @@ export default function Navbar({
       >
         <nav aria-label="Mobile primary" className="flex-1 overflow-y-auto px-6 py-4">
           <ul className="flex flex-col gap-1">
-            {site.navItems.map((item) => (
+            {navItems.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
@@ -108,6 +162,38 @@ export default function Navbar({
                 </Link>
               </li>
             ))}
+
+            {isAuthed ? (
+              <>
+                <li className="px-2 py-1 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+                  Signed in as {displayName}
+                </li>
+                <li className="px-2 py-2">
+                  <Button
+                    href="/profile"
+                    icon={<FaUserCircle className="h-3.5 w-3.5" />}
+                    onClick={onCloseMenu}
+                    className="w-full justify-start border border-zinc-300 px-3 py-3 text-xs text-zinc-900 hover:bg-zinc-900 hover:text-white"
+                  >
+                    Profile
+                  </Button>
+                </li>
+              </>
+            ) : (
+              accountItem ? (
+                <li className="px-2 py-2">
+                  <Button
+                    href={accountItem.href}
+                    variant="outline"
+                    icon={<FaUser className="h-3.5 w-3.5" />}
+                    onClick={onCloseMenu}
+                    className="w-full justify-start border border-zinc-300 px-3 py-3 text-xs text-zinc-900 hover:bg-[#e63946] hover:text-white"
+                  >
+                    {accountItem.label}
+                  </Button>
+                </li>
+              ) : null
+            )}
           </ul>
         </nav>
 

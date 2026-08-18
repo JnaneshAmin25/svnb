@@ -55,9 +55,9 @@ export default function Timeline() {
                     }`}
                   >
                     
-                    <h3 className="mt-2 font-title text-xl font-semibold uppercase text-zinc-900 sm:text-2xl">
+                    <h3 className="mt-2 font-title text-2xl font-semibold uppercase text-zinc-900 sm:text-3xl">
                       {milestone.title} 
-                      <span className=" ms-2 font-title text-2xl font-semibold uppercase text-[#e63946] sm:text-3xl">{milestone.year}</span>
+                      <span className=" ms-2 font-title text-3xl font-semibold uppercase text-[#e63946] sm:text-4xl">{milestone.year}</span>
                     </h3>
                     <p className="mt-3 text-sm leading-7 text-zinc-700 sm:text-base">
                       {milestone.description}

@@ -1,3 +1,5 @@
+import { type GalleryCategoryKey } from "@/data/galleryCategories";
+
 /**
  * One unified model for the gallery. Each item is either a still image or a video,
  * and each carries an explicit `orientation` so the grid can lay it out without
@@ -12,6 +14,7 @@ export type GalleryMedia = {
   id: string;
   type: GalleryMediaType;
   title: string;
+  category?: GalleryCategoryKey;
   /** Caption shown on the card. Optional short description (e.g. "Ganesh Chaturthi 2024"). */
   caption?: string;
   orientation: GalleryOrientation;
@@ -36,6 +39,7 @@ const IMG = (
   type: "image",
   title,
   caption,
+  category: "moments",
   orientation,
   poster,
 });
@@ -54,6 +58,7 @@ const VID = (
   type: "video",
   title,
   caption,
+  category: "moments",
   orientation,
   src,
   poster,
@@ -67,81 +72,74 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   /* ── Portrait images ── */
   IMG(
     "img-portrait-1",
-    "Lead Drummer",
+    "",
     "Band captain leading the procession",
-    "/Images/Hero/av1.jpg",
+    "/Images/Gallery/Images/1.jpg",
     "portrait",
   ),
   IMG(
     "img-portrait-2",
-    "Tasha Solo",
+    "",
     "Tasha player mid-strike",
-    "/Images/Hero/cardIcon.PNG",
+    "/Images/Gallery/Images/2.jpeg",
     "portrait",
   ),
   IMG(
     "img-portrait-3",
-    "Uniform Detail",
+    "",
     "Embroidered sash and cap",
-    "/Images/Hero/Card_Icon.PNG",
+    "/Images/Gallery/Images/4.jpg",
     "portrait",
   ),
   IMG(
     "img-portrait-4",
-    "Founders Portrait",
+    "",
     "The five founding drummers, 2017",
-    "/Images/our-journey/our-journey-1.jpg",
+    "/Images/Gallery/Images/5.jpg",
     "portrait",
   ),
   IMG(
     "img-portrait-5",
-    "Junior Drummer",
+    "",
     "Next-generation member at practice",
-    "/Images/our-journey/our-journey-2.jpg",
+    "/Images/Gallery/Images/6.jpg",
     "portrait",
   ),
   IMG(
     "img-portrait-6",
-    "Palki Bearer",
+    "",
     "Carrying the deity through the streets",
-    "/Images/our-journey/our-journey-3.jpg",
+    "/Images/Gallery/Images/9.jpeg",
     "portrait",
   ),
 
   /* ── Landscape images ── */
   IMG(
     "img-landscape-1",
-    "Ganesh Chaturthi",
+    "",
     "Main procession, 2024",
-    "/Images/Festival/Ganesh_Chaturthi.jpg",
+    "/Images/Gallery/Images/3.jpeg",
     "landscape",
   ),
   IMG(
     "img-landscape-2",
-    "Festival Stage",
+    "",
     "Band lined up at the temple square",
-    "/Images/Hero/hero-section.png",
+    "/Images/Gallery/Images/7.jpg",
     "landscape",
   ),
   IMG(
     "img-landscape-3",
-    "Wedding Procession",
+    "",
     "Beating through the wedding mandap",
-    "/Images/Roadmap/roadmap.png",
-    "landscape",
-  ),
-  IMG(
-    "img-landscape-4",
-    "Temple Front",
-    "Awaiting the deity at dawn",
-    "/Images/Hero/roadmap.png",
+    "/Images/Gallery/Images/8.jpeg",
     "landscape",
   ),
 
   /* ── Portrait videos ── */
   VID(
     "vid-portrait-1",
-    "Tasha Solo",
+    "",
     "Vertical cut — solo performance",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "/Images/Hero/av1.jpg",
@@ -149,7 +147,7 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   ),
   VID(
     "vid-portrait-2",
-    "Dhol Practice",
+    "",
     "Rehearsal clip, filmed on phone",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     "/Images/Hero/cardIcon.PNG",
@@ -159,7 +157,7 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   /* ── Landscape videos ── */
   VID(
     "vid-landscape-1",
-    "Bharatanatyam",
+    "",
     "Full ensemble performance",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "/Images/Festival/Ganesh_Chaturthi.jpg",
@@ -167,7 +165,7 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   ),
   VID(
     "vid-landscape-2",
-    "Ganesh Chaturthi",
+    "",
     "Immersion procession highlight",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     "/Images/Hero/hero-section.png",
@@ -175,7 +173,7 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   ),
   VID(
     "vid-landscape-3",
-    "Wedding Procession",
+    "",
     "Beating the wedding route",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     "/Images/Hero/hero-section.png",
@@ -183,7 +181,7 @@ export const GALLERY_MEDIA: readonly GalleryMedia[] = [
   ),
   VID(
     "vid-landscape-4",
-    "Temple Festival",
+    "",
     "Stage performance at the annual temple festival",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     "/Images/Festival/Ganesh_Chaturthi.jpg",
